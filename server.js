@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cores from "cors"
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import flightRoutes from './routes/flightRoutes.js';
@@ -11,6 +12,8 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
+app.use(cores());
 app.use(express.json());
 
 

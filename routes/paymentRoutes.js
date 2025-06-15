@@ -1,9 +1,9 @@
 import express from 'express';
-import { payForBooking } from '../controllers/paymentController.js';
+import { markAsPaid } from '../controllers/paymentController.js';
 import protect from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.put('/:id/pay', protect, payForBooking);
+router.put('/:id/pay', protect, markAsPaid);
 
 export default router;

@@ -1,5 +1,6 @@
 import Booking from '../models/Booking.js';
 import Flight from '../models/Flight.js';
+import { sendEmail } from '../utils/emailService.js';
 
 export const createBooking = async (req, res) => {
   const { flightId, seats } = req.body;
@@ -16,6 +17,15 @@ export const createBooking = async (req, res) => {
     flight: flight._id,
     seats,
   });
+
+  // sending Email after Booking
+  await sendEmail(
+    req.user.email,
+    'Booking Confirmation',
+    `<h2>Booking Confirmed!</h2>
+    <p>Your booking for flight ${flight.flightNumber} is confirmed.</p>
+    <p>Thank you for choosing us!</p>`
+  );
 
   // Update seat availability
   flight.seatsAvailable -= seats;
@@ -49,6 +59,15 @@ export const cancelBooking = async (req, res) => {
 
   booking.status = 'cancelled';
   await booking.save();
+
+   // sending Email after Booking cancelled
+  await sendEmail(
+    req.user.email,
+    'Booking Cancelled',
+    `<h2>Booking Cancelled</h2>
+    <p>Your booking for flight ${booking.flight.flightNumber} has been cancelled.</p>`
+  );
+
 
   res.json({ message: 'Booking cancelled', booking });
 };
