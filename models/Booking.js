@@ -1,10 +1,24 @@
 import mongoose from 'mongoose';
 
 const bookingSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  flight: { type: mongoose.Schema.Types.ObjectId, ref: 'Flight' },
-  seatCount: Number,
-  status: { type: String, default: 'Booked' }
+  user: { type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User', 
+    required: true },
+  flight: { type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Flight', 
+    required: true },
+  seats: { type: Number,
+     default: 1 },
+  status: { type: String,
+     default: 'confirmed' },
+  paid: { type: Boolean,
+     default: false },
+  paymentDetails: {
+      id: String,
+      status: String,
+      email_address: String,
+  },
+
 }, { timestamps: true });
 
 const Booking = mongoose.model('Booking', bookingSchema);

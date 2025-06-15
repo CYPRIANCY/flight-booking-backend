@@ -1,18 +1,39 @@
 import User from '../models/User.js';
-import jwt from 'jsonwebtoken';
+import generateToken from '../utils/generateToken.js';
 
-const generateToken = (user) => jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
+export const registerUser = async (req, res) => {
+  const { name, email, password, role } = req.body;
 
-export const register = async (req, res) => {
-  const { name, email, password } = req.body;
-  const user = await User.create({ name, email, password });
-  res.status(201).json({ token: generateToken(user) });
+  const userExists = await User.findOne({ email });
+  if (userExists) return res.status(400).json({ message: 'User already exists' });
+
+  const user = await User.create({ name, email, password, role });
+  if (user) {
+    res.status(201).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      token: generateToken(user._id),
+    });
+  } else {
+    res.status(400).json({ message: 'Invalid user data' });
+  }
 };
 
-export const login = async (req, res) => {
+export const loginUser = async (req, res) => {
   const { email, password } = req.body;
+
   const user = await User.findOne({ email });
-  if (!user || !(await user.comparePassword(password)))
-    return res.status(401).json({ message: 'Invalid credentials' });
-  res.json({ token: generateToken(user) });
+  if (user && (await user.matchPassword(password))) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      token: generateToken(user._id),
+    });
+  } else {
+    res.status(401).json({ message: 'Invalid credentials' });
+  }
 };
