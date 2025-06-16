@@ -18,6 +18,14 @@ const bookingSchema = new mongoose.Schema({
       status: String,
       email_address: String,
   },
+  
+  // models/Booking.js
+
+  ticketPDF: {
+    data: Buffer,
+    contentType: String
+  }
+
 
 }, { timestamps: true });
 
