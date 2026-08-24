@@ -6,7 +6,7 @@ export const createFlight = async (req, res) => {
   const saved = await flight.save();
   res.status(201).json(saved);
   } catch (error) {
-    res.status(500).json({ message: err.message });
+      res.status(500).json({ message: error.message });
   }
 };
 
@@ -15,7 +15,7 @@ export const getFlights = async (req, res) => {
      const flights = await Flight.find();
   res.json(flights);
   } catch (error) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -25,7 +25,7 @@ export const getFlightById = async (req, res) => {
   if (!flight) return res.status(404).json({ message: 'Flight not found' });
   res.json(flight);
   } catch (error) {
-     res.status(500).json({ message: err.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -35,7 +35,7 @@ export const updateFlight = async (req, res) => {
   if (!flight) return res.status(404).json({ message: 'Flight not found' });
   res.json(flight);
   } catch (error) {
-     res.status(500).json({ message: err.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -45,7 +45,7 @@ export const deleteFlight = async (req, res) => {
   if (!flight) return res.status(404).json({ message: 'Flight not found' });
   res.json({ message: 'Flight deleted' });
   } catch (error) {
-     res.status(500).json({ message: err.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
