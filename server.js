@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import cores from "cors"
+import cors from "cors"
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import flightRoutes from './routes/flightRoutes.js';
@@ -14,7 +14,7 @@ connectDB();
 
 const app = express();
 
-app.use(cores());
+app.use(cors());
 app.use(express.json());
 
 
