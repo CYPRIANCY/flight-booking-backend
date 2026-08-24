@@ -14,10 +14,11 @@ const bookingSchema = new mongoose.Schema({
   paid: { type: Boolean,
      default: false },
   paymentDetails: {
-      id: String,
-      status: String,
-      email_address: String,
-  },
+    id: String,
+    status: String,
+    update_time: Date,
+    email_address: String,
+  }
   
   // models/Booking.js
 
