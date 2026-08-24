@@ -20,8 +20,8 @@ export const markAsPaid = async (req, res) => {
 
     booking.paid = true;
     booking.paymentDetails = {
-      id: req.body.id || 'PAYID123456',
-      status: req.body.status || 'COMPLETED',
+      id: 'PAYID123456',
+      status: 'COMPLETED',
       update_time: new Date(),
       email_address: req.user.email
     };
