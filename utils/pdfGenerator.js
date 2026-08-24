@@ -1,31 +1,104 @@
 import PDFDocument from 'pdfkit';
 import { PassThrough } from 'stream';
 
-export const generateTicketPDFBuffer = async (booking, flight, user) => {
+export const generateTicketPDFBuffer = async (
+  booking,
+  flight,
+  user
+) => {
   return new Promise((resolve, reject) => {
-    const doc = new PDFDocument();
+    const doc = new PDFDocument({
+      margin: 50
+    });
+
     const stream = new PassThrough();
     const chunks = [];
 
     doc.pipe(stream);
 
-    doc.fontSize(24).text('Flight Ticket', { align: 'center' });
+    doc
+      .fontSize(24)
+      .text('CYPIDON FLIGHT BOOKING', {
+        align: 'center'
+      });
+
     doc.moveDown();
-    doc.fontSize(14).text(`Passenger: ${user.name}`);
+
+    doc
+      .fontSize(20)
+      .text('Electronic Flight Ticket', {
+        align: 'center'
+      });
+
+    doc.moveDown(2);
+
+    doc.fontSize(14);
+
+    doc.text(`Passenger: ${user.name}`);
     doc.text(`Email: ${user.email}`);
-    doc.text(`Flight: ${flight.flightNumber}`);
+
+    doc.moveDown();
+
+    doc.text(`Flight Number: ${flight.flightNumber}`);
+    doc.text(`Airline: ${flight.airline}`);
+
+    doc.moveDown();
+
     doc.text(
-      `Route: ${flight.departureAirport} → ${flight.arrivalAirport}`
+      `From: ${flight.departureAirport}`
     );
-    doc.text(`Date: ${new Date(flight.departureTime).toLocaleDateString()}`);
+
+    doc.text(
+      `To: ${flight.arrivalAirport}`
+    );
+
+    doc.moveDown();
+
+    doc.text(
+      `Departure: ${new Date(
+        flight.departureTime
+      ).toLocaleString()}`
+    );
+
+    doc.text(
+      `Arrival: ${new Date(
+        flight.arrivalTime
+      ).toLocaleString()}`
+    );
+
+    doc.moveDown();
+
     doc.text(`Seats: ${booking.seats}`);
-    doc.text(`Amount Paid: $${booking.totalPrice}`);
-    doc.text(`Booking ID: ${booking._id}`);
+
+    doc.text(
+      `Amount Paid: $${booking.totalPrice}`
+    );
+
+    doc.text(
+      `Booking ID: ${booking._id}`
+    );
+
+    doc.moveDown(2);
+
+    doc
+      .fontSize(12)
+      .text(
+        'Thank you for choosing CYPIDON Flight Booking System.',
+        {
+          align: 'center'
+        }
+      );
 
     doc.end();
 
-    stream.on('data', chunk => chunks.push(chunk));
-    stream.on('end', () => resolve(Buffer.concat(chunks)));
+    stream.on('data', (chunk) => {
+      chunks.push(chunk);
+    });
+
+    stream.on('end', () => {
+      resolve(Buffer.concat(chunks));
+    });
+
     stream.on('error', reject);
   });
 };
