@@ -12,10 +12,13 @@ export const createBooking = async (req, res) => {
     return res.status(400).json({ message: 'Not enough seats available' });
   }
 
+ const totalPrice = flight.price * seats;
+
   const booking = await Booking.create({
-    user: req.user._id,
-    flight: flight._id,
-    seats,
+      user: req.user._id,
+      flight: flight._id,
+      seats,
+      totalPrice
   });
 
   // sending Email after Booking
