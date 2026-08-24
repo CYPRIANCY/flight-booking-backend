@@ -3,40 +3,70 @@ import Flight from '../models/Flight.js';
 import { sendEmail } from '../utils/emailService.js';
 
 export const createBooking = async (req, res) => {
-  const { flightId, seats } = req.body;
+  try {
+    const { flightId, seats } = req.body;
 
-  const flight = await Flight.findById(flightId);
-  if (!flight) return res.status(404).json({ message: 'Flight not found' });
+    if (!flightId || !seats) {
+      return res.status(400).json({
+        message: 'Flight ID and number of seats are required'
+      });
+    }
 
-  if (flight.seatsAvailable < seats) {
-    return res.status(400).json({ message: 'Not enough seats available' });
-  }
+    if (seats < 1) {
+      return res.status(400).json({
+        message: 'Seats must be at least 1'
+      });
+    }
 
- const totalPrice = flight.price * seats;
+    const flight = await Flight.findById(flightId);
 
-  const booking = await Booking.create({
+    if (!flight) {
+      return res.status(404).json({
+        message: 'Flight not found'
+      });
+    }
+
+    if (flight.seatsAvailable < seats) {
+      return res.status(400).json({
+        message: 'Not enough seats available'
+      });
+    }
+
+    const totalPrice = flight.price * seats;
+
+    const booking = await Booking.create({
       user: req.user._id,
       flight: flight._id,
       seats,
       totalPrice
-  });
+    });
 
-  // sending Email after Booking
-  await sendEmail(
-    req.user.email,
-    'Booking Confirmation',
-    `<h2>Booking Confirmed!</h2>
-    <p>Your booking for flight ${flight.flightNumber} is confirmed.</p>
-    <p>Thank you for choosing us!</p>`
-  );
+    flight.seatsAvailable -= seats;
 
-  // Update seat availability
-  flight.seatsAvailable -= seats;
-  await flight.save();
+    await flight.save();
 
-  res.status(201).json(booking);
+    await sendEmail(
+      req.user.email,
+      'Booking Confirmation',
+      `
+        <h2>Booking Confirmed!</h2>
+        <p>Your booking has been successfully created.</p>
+        <p><strong>Flight:</strong> ${flight.flightNumber}</p>
+        <p><strong>Seats:</strong> ${seats}</p>
+        <p><strong>Total:</strong> $${totalPrice}</p>
+      `
+    );
+
+    res.status(201).json(booking);
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: error.message
+    });
+  }
 };
-
 export const getMyBookings = async (req, res) => {
   const bookings = await Booking.find({ user: req.user._id }).populate('flight');
   res.json(bookings);
