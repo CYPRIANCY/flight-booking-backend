@@ -1,7 +1,6 @@
 import Booking from '../models/Booking.js';
 import Flight from '../models/Flight.js';
 import User from '../models/User.js';
-import mongoose from 'mongoose';
 
 // View all bookings with optional filters
 export const getAllBookings = async (req, res) => {
