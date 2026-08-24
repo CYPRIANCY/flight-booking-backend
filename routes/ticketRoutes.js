@@ -4,6 +4,10 @@ import protect from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/download/:bookingId', protect, downloadTicketFromDB);
+router.get(
+  '/download/:bookingId',
+  protect,
+  downloadTicketFromDB
+);
 
 export default router;
