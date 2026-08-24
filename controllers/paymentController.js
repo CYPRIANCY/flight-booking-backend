@@ -14,14 +14,14 @@ export const markAsPaid = async (req, res) => {
       return res.status(404).json({ message: 'Booking not found' });
     }
 
-    if (booking.user.toString() !== req.user._id.toString()) {
+    if (booking.user._id.toString() !== req.user._id.toString()) {
     return res.status(403).json({ message: 'Not your booking' });
   }
 
     booking.paid = true;
     booking.paymentDetails = {
-      id: req.body.id || 'PAYID123456',
-      status: req.body.status || 'COMPLETED',
+      id: 'PAYID123456',
+      status: 'COMPLETED',
       update_time: new Date(),
       email_address: req.user.email
     };
