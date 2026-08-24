@@ -7,6 +7,11 @@ const bookingSchema = new mongoose.Schema({
   flight: { type: mongoose.Schema.Types.ObjectId, 
     ref: 'Flight', 
     required: true },
+  totalPrice: {
+      type: Number,
+      required: true,
+      min: 0
+  },
   seats: { type: Number,
      default: 1 },
   status: { type: String,
