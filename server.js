@@ -7,7 +7,7 @@ import flightRoutes from './routes/flightRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
-import { downloadTicketFromDB } from './controllers/ticketController.js';
+import ticketRoutes from './routes/ticketRoutes.js';
 
 dotenv.config();
 connectDB();
@@ -29,7 +29,7 @@ app.use('/api/flights', flightRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/download', downloadTicketFromDB);
+app.use('/api/tickets', ticketRoutes);
 
 
 const PORT = process.env.PORT || 5000;
