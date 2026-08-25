@@ -1,53 +1,52 @@
 import nodemailer from 'nodemailer';
 
-
 const transporter = nodemailer.createTransport({
   service: 'gmail',
+
   auth: {
-    user: process.env.EMAIL_USER,  // your Gmail address
-    pass: process.env.EMAIL_PASS   // your Gmail app password
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
+export const sendEmail = async (
+  to,
+  subject,
+  html,
+  attachment = null
+) => {
+  try {
+    const mailOptions = {
+      from: `"Flight Booking System" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html
+    };
 
-// For saving in file
-// export const sendEmail = async (to, subject, html, attachmentPath = null) => {
-//   const mailOptions = {
-//     from: `"Flight Booking System" <${process.env.EMAIL_USER}>`,
-//     to,
-//     subject,
-//     html
-//   };
+    if (attachment) {
+      mailOptions.attachments = [
+        {
+          filename: attachment.filename,
+          content: attachment.content,
+          contentType: attachment.contentType
+        }
+      ];
+    }
 
-//    if (attachmentPath) {
-//         mailOptions.attachments = [
-//         {
-//             filename: attachmentPath.split('/').pop(),
-//             path: attachmentPath
-//         }
-//         ];
-//     }
+    const result =
+      await transporter.sendMail(mailOptions);
 
-//   await transporter.sendMail(mailOptions);
-// };
+    console.log(
+      `Email sent successfully to ${to}`
+    );
 
-export const sendEmail = async (to, subject, html, attachment = null) => {
-  const mailOptions = {
-    from: `"Flight Booking System" <${process.env.EMAIL_USER}>`,
-    to,
-    subject,
-    html,
-  };
+    return result;
+  } catch (error) {
+    console.error(
+      'Email sending failed:',
+      error.message
+    );
 
-  if (attachment) {
-    mailOptions.attachments = [
-      {
-        filename: attachment.filename,
-        content: attachment.content,
-        contentType: attachment.contentType
-      }
-    ];
+    throw error;
   }
-
-  await transporter.sendMail(mailOptions);
 };
